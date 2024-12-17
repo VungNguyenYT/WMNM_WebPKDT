@@ -7,6 +7,8 @@
         <p> <strong>Tên đề tài:</strong> Xây dựng website bán phụ kiện điện thoại</p>
         <p><strong>Thành viên thực hiện:</strong> Nguyễn Văn Vửng - Đinh Lê Bảo Duy - Lý Mỹ Duyên</p>
         <p><strong>Lớp:</strong> DA21TTA</p>
+        <img src="assets/images/timthumb.png" alt="">
+        
     </div>
 </footer>
 </body>
