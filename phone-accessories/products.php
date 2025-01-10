@@ -1,4 +1,13 @@
 <?php include 'includes/header.php'; ?>
+<?php
+// Kết nối đến cơ sở dữ liệu
+$conn = new mysqli('localhost', 'root', '', 'mnm_pkdt');
+
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Kết nối thất bại: " . $conn->connect_error);
+}
+?>
 
 <main>
     <h2>Sản phẩm</h2>
