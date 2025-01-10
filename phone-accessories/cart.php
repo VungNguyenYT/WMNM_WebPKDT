@@ -1,5 +1,6 @@
 <?php
 session_start();
+include 'includes/db.php'; // Kết nối cơ sở dữ liệu
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +23,11 @@ session_start();
     <!-- Danh sách sản phẩm trong giỏ hàng -->
     <main
         style="max-width: 1000px; margin: 20px auto; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <?php if (!empty($_SESSION['cart']) && is_array($_SESSION['cart'])): ?>
+        <?php
+        if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])):
+            $cart = $_SESSION['cart'];
+            $total = 0;
+            ?>
             <table border="1" style="width: 100%; border-collapse: collapse; text-align: center;">
                 <thead style="background: #f8f9fa;">
                     <tr>
@@ -30,35 +35,58 @@ session_start();
                         <th>Tên sản phẩm</th>
                         <th>Giá</th>
                         <th>Số lượng</th>
-                        <th>Tổng tiền</th>
-                        <th>Hành động</th>
+                        <th>Tổng</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($_SESSION['cart'] as $id => $item): ?>
-                        <?php if (is_array($item)): ?>
+                    <?php
+                    foreach ($cart as $productID => $quantity):
+                        $stmt = $conn->prepare("SELECT name, price, image FROM products WHERE id = ?");
+                        $stmt->bind_param('i', $productID);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $product = $result->fetch_assoc();
+
+                        if ($product) {
+                            $subtotal = $product['price'] * $quantity;
+                            $total += $subtotal;
+                            ?>
                             <tr>
-                                <td><img src="uploads/<?= htmlspecialchars($item['image']) ?>" alt="Hình ảnh"
+                                <td><img src="uploads/<?= htmlspecialchars($product['image']) ?>" alt="Hình ảnh"
                                         style="width: 100px; height: auto; border-radius: 5px;"></td>
-                                <td><?= htmlspecialchars($item['name']) ?></td>
-                                <td><?= number_format($item['price']) ?> VND</td>
-                                <td><?= $item['quantity'] ?></td>
-                                <td><?= number_format($item['price'] * $item['quantity']) ?> VND</td>
+                                <td><?= htmlspecialchars($product['name']) ?></td>
+                                <td><?= number_format($product['price'], 0, ',', '.') ?> VND</td>
+                                <td><?= $quantity ?></td>
+                                <td><?= number_format($subtotal, 0, ',', '.') ?> VND</td>
                                 <td>
-                                    <a href="remove-from-cart.php?id=<?= $id ?>"
-                                        style="padding: 5px 10px; background: #dc3545; color: white; text-decoration: none; border-radius: 3px;">Xóa</a>
+                                    <form action="update_cart.php" method="post" style="display: inline;">
+                                        <input type="hidden" name="product_id" value="<?= $productID ?>">
+                                        <button type="submit" name="action" value="delete"
+                                            style="padding: 5px 10px; background-color: #dc3545; color: white; border: none; border-radius: 3px;">Xóa</button>
+                                    </form>
                                 </td>
                             </tr>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="6" style="color: red; text-align: center;">Dữ liệu sản phẩm không hợp lệ!</td>
-                            </tr>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                            <?php
+                        }
+                    endforeach;
+                    ?>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" style="text-align: right; font-weight: bold;">Tổng cộng:</td>
+                        <td colspan="2"><?= number_format($total, 0, ',', '.') ?> VND</td>
+                    </tr>
+                </tfoot>
             </table>
+            <div style="text-align: right; margin-top: 20px;">
+                <a href="checkout.php"
+                    style="padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">
+                    Thanh toán
+                </a>
+            </div>
         <?php else: ?>
-            <p style="text-align: center; color: red; font-weight: bold;">Giỏ hàng hiện đang trống!</p>
+            <p style="text-align: center; font-weight: bold; color: red;">Giỏ hàng hiện đang trống!</p>
         <?php endif; ?>
     </main>
 
