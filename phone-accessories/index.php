@@ -93,10 +93,8 @@
     </main>
 
     <!-- Footer -->
-    <footer
-        style="background: #333; color: #fff; text-align: center; padding: 15px 0; margin-top: 20px; font-size: 14px;">
-        <p>&copy; 2025 Phone Accessories. All rights reserved.</p>
-    </footer>
+
+    <?php include 'includes/footer.php'; ?>
 
 </body>
 

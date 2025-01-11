@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th1 10, 2025 lúc 10:33 PM
+-- Thời gian đã tạo: Th1 11, 2025 lúc 07:13 AM
 -- Phiên bản máy phục vụ: 10.4.27-MariaDB
 -- Phiên bản PHP: 7.4.33
 
@@ -101,6 +101,59 @@ INSERT INTO `categories` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (3, 'Cáp sạc', '2025-01-10 15:40:27', '2025-01-10 15:40:27'),
 (4, 'Pin dự phòng', '2025-01-10 15:40:27', '2025-01-10 15:40:27'),
 (5, 'Tai nghe', '2025-01-10 15:40:27', '2025-01-10 15:40:27');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `customer_orders`
+--
+
+CREATE TABLE `customer_orders` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `phone` varchar(15) NOT NULL,
+  `address` text NOT NULL,
+  `payment_method` enum('COD','BANK') NOT NULL,
+  `total_price` decimal(10,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `customer_orders`
+--
+
+INSERT INTO `customer_orders` (`id`, `user_id`, `full_name`, `phone`, `address`, `payment_method`, `total_price`, `created_at`, `updated_at`) VALUES
+(1, 8, 'Nguyễn Văn Vửng', '0347482012', 'aa', 'COD', '1200000.00', '2025-01-10 22:22:39', '2025-01-10 22:22:39'),
+(2, 5, 'Nguyễn Văn Vửng', '0347482012', 'aa', 'COD', '1800000.00', '2025-01-11 05:52:33', '2025-01-11 05:52:33'),
+(3, 5, 'Nguyễn Văn Vửng', '0347482012', 'test', 'BANK', '150000.00', '2025-01-11 05:54:22', '2025-01-11 05:54:22');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `customer_order_items`
+--
+
+CREATE TABLE `customer_order_items` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `subtotal` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `customer_order_items`
+--
+
+INSERT INTO `customer_order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`, `subtotal`) VALUES
+(1, 1, 3, 1, '250000.00', '250000.00'),
+(2, 1, 8, 2, '300000.00', '600000.00'),
+(3, 1, 1, 1, '350000.00', '350000.00'),
+(4, 2, 2, 12, '150000.00', '1800000.00'),
+(5, 3, 2, 1, '150000.00', '150000.00');
 
 -- --------------------------------------------------------
 
@@ -274,6 +327,20 @@ ALTER TABLE `categories`
   ADD UNIQUE KEY `name` (`name`);
 
 --
+-- Chỉ mục cho bảng `customer_orders`
+--
+ALTER TABLE `customer_orders`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Chỉ mục cho bảng `customer_order_items`
+--
+ALTER TABLE `customer_order_items`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `order_id` (`order_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
 -- Chỉ mục cho bảng `migrations`
 --
 ALTER TABLE `migrations`
@@ -334,7 +401,19 @@ ALTER TABLE `cart_items`
 -- AUTO_INCREMENT cho bảng `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT cho bảng `customer_orders`
+--
+ALTER TABLE `customer_orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT cho bảng `customer_order_items`
+--
+ALTER TABLE `customer_order_items`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `migrations`
@@ -388,6 +467,13 @@ ALTER TABLE `carts`
 ALTER TABLE `cart_items`
   ADD CONSTRAINT `cart_items_ibfk_1` FOREIGN KEY (`cart_id`) REFERENCES `carts` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `cart_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `customer_order_items`
+--
+ALTER TABLE `customer_order_items`
+  ADD CONSTRAINT `customer_order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `customer_orders` (`id`),
+  ADD CONSTRAINT `customer_order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
 
 --
 -- Các ràng buộc cho bảng `orders`
