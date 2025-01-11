@@ -11,24 +11,7 @@
     style="font-family: Arial, sans-serif; background: linear-gradient(to right, #f8f9fa, #e9ecef); margin: 0; padding: 0;">
 
     <!-- Header -->
-    <header
-        style="background: #007bff; color: #fff; padding: 15px 0; text-align: center; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-        <h1 style="margin-bottom: 10px; font-size: 28px; letter-spacing: 1px;">Phone Accessories</h1>
-        <nav style="margin-top: 10px;">
-            <a href="index.php"
-                style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 18px; transition: color 0.3s;">Trang
-                chủ</a>
-            <a href="products.php"
-                style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 18px; transition: color 0.3s;">Sản
-                phẩm</a>
-            <a href="cart.php"
-                style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 18px; transition: color 0.3s;">Giỏ
-                hàng</a>
-            <a href="login.php"
-                style="color: #fff; text-decoration: none; margin: 0 15px; font-size: 18px; transition: color 0.3s;">Đăng
-                nhập</a>
-        </nav>
-    </header>
+    <?php include 'includes/header.php'; ?>
 
     <!-- Main content -->
     <main
